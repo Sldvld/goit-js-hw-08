@@ -1,27 +1,21 @@
 import Player from '@vimeo/player';
+import throttle from "lodash.throttle";
 
 const iframe = document.querySelector('iframe');
 const player = new Player(iframe);
+const currentTime = function(data) {
+    localStorage.setItem("videoplayer-current-time",
+    JSON.stringify(data.seconds)
+    );
+    let time = Number(localStorage.getItem("videoplayer-current-time"));
+    console.log(time);
+}
 
-    player.on('play', function() {
-        console.log('played the video!');
-    });
+    player.on("timeupdate", throttle(currentTime, 1000));
 
-    player.getVideoTitle().then(function(title) {
-        console.log('title:', title);
-    });
-
-
-    player.on('timeupdate', function(data) {{
-            duration: 61.857
-            percent: 0.049
-            seconds: 3.034
-    }
-        console.log('data', data);
-    });
-
-    player.setCurrentTime(30).then(function(seconds) {
-    }).catch(function(error) {
+    player.setCurrentTime(localStorage.getItem("videoplayer-current-time"))
+        .then(function(seconds) {
+    })  .catch(function(error) {
             switch (error.name) {
             case 'RangeError':
             break;
